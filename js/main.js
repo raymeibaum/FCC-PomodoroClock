@@ -15,9 +15,9 @@ $(function() {
   var $checkContainer = $('#check-container');
   var $progressBar = $('#progress-bar');
 
-  $startButton.click(startPomodoro);
+  $startButton.click(run);
 
-  function startPomodoro() {
+  function run() {
     setTimer(10);
     if (!intervalID) {
       $startButton.text('Pause');
@@ -35,7 +35,7 @@ $(function() {
     endTime = startTime + minutes * 60000;
   }
 
-  function update() {
+  function update(additonalTime) {
     timeRemaining = new Date(endTime - Date.now());
     progressPercent = Math.floor((Date.now() - startTime) / (endTime - startTime) * 100);
     $progressBar.attr('style', `width: ${progressPercent}%`);
@@ -44,10 +44,6 @@ $(function() {
   function pauseTimer() {
     pauseTime = timeRemaining;
   }
-
-
-
-
 
 
 
