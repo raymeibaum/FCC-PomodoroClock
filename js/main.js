@@ -1,6 +1,6 @@
 $(function() {
 
-  var model = {
+  var clock = {
     checks: 0,
     progress: {
       value: 0,
@@ -13,10 +13,15 @@ $(function() {
       start: null,
       end: null,
       set: function(minutes) {
-
+        this.start = Date.now();
+        this.end = Date.now() + minutes * 60000;
+        console.log(this);
       },
-      start: function() {
-
+      timeRemaining: function() {
+        return this.end - Date.now();
+      },
+      refresh: function() {
+        console.log()
       }
     }
   }
@@ -25,22 +30,27 @@ $(function() {
       view.init();
     },
     start: function() {
-
+      clock.timer.set(25);
+      // window.setInterval(, 1000);
     }
   }
 
   var view = {
     init: function() {
-      this.startButton = $('#start-button');
-      this.startButton.click(controller.start);
+      this.$startButton = $('#start-button');
+      this.$startButton.click(controller.start);
 
-      this.progressBar = $('#progress-bar');
-      this.timer = $('#timer');
+      this.$progressBar = $('#progress-bar');
+      this.$checkContainer = $('#check-container');
 
-
-      this.render()
     },
-    render: function() {
+    displayChecks: function(numberOfChecks) {
+      this.$checkContainer.empty();
+      for (var i = 0; i < numberOfChecks; i++) {
+        this.$checkContainer.append('<i class="fa fa-2x fa-check animated fadeIn" aria-hidden="true"></i>');
+      }
+    },
+    update: function(timerObject) {
 
     }
   }
