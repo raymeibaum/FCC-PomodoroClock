@@ -13,7 +13,12 @@ $(function() {
         this.end = this.start + minutes * 60000;
       },
       timeRemaining: function() {
-        return this.end - Date.now();
+        return new Date(this.end - Date.now());
+      }
+    },
+    progress: {
+      getPercentage: function() {
+        return Math.floor((Date.now() - clock.timer.start) / (clock.timer.end - clock.timer.start) * 100);
       }
     }
   };
@@ -23,8 +28,8 @@ $(function() {
       view.init();
     },
     start: function() {
-      clock.timer.set(25);
-      window.setInterval(view.update, 1000);
+      clock.timer.set(2);
+      window.setInterval(view.update, 500);
     },
     getClockObject: function() {
       return clock;
@@ -38,6 +43,7 @@ $(function() {
 
       this.$progressBar = $('#progress-bar');
       this.$checkContainer = $('#check-container');
+      this.$timer = $('#timer');
 
     },
     displayChecks: function(numberOfChecks) {
@@ -47,8 +53,20 @@ $(function() {
       }
     },
     update: function() {
-      currentClock = controller.getClockObject()
-      console.log(currentClock.timer.timeRemaining());
+      view.updateTimer(controller.getClockObject());
+      view.updateProgressBar(controller.getClockObject());
+    },
+    updateTimer: function(clockObject) {
+      var date = clockObject.timer.timeRemaining()
+      var minutes = view.formatTime(date.getMinutes());
+      var seconds = view.formatTime(date.getSeconds())
+      this.$timer.text(`${minutes}:${seconds}`);
+    },
+    updateProgressBar: function(clockObject) {
+      this.$progressBar[0].style.width = clockObject.progress.getPercentage() + '%';
+    },
+    formatTime: function(time) {
+      return time < 10 ? '0' + time : time;
     }
   };
 
