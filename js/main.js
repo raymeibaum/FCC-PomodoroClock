@@ -14,6 +14,9 @@ $(function() {
       },
       timeRemaining: function() {
         return new Date(this.end - Date.now());
+      },
+      timeRemainingInMs: function() {
+        return this.end - Date.now();
       }
     },
     progress: {
@@ -28,19 +31,24 @@ $(function() {
       view.init();
     },
     start: function() {
-      clock.timer.set(2);
-      window.setInterval(view.update, 500);
+      clock.timer.set(1);
+      window.setInterval(view.update, 100);
     },
     getClockObject: function() {
       return clock;
+    },
+    didFinish: function() {
+      return clock.timer.timeRemainingInMs() <= 0;
     }
   };
 
   var view = {
     init: function() {
       this.$startButton = $('#start-button');
-      this.$startButton.click(controller.start);
-
+      this.$startButton.click(function() {
+        controller.start();
+        $(this).fadeOut();
+      });
       this.$progressBar = $('#progress-bar');
       this.$checkContainer = $('#check-container');
       this.$timer = $('#timer');
@@ -53,8 +61,10 @@ $(function() {
       }
     },
     update: function() {
-      view.updateTimer(controller.getClockObject());
-      view.updateProgressBar(controller.getClockObject());
+      if (!controller.didFinish()) {
+        view.updateTimer(controller.getClockObject());
+        view.updateProgressBar(controller.getClockObject());
+      }
     },
     updateTimer: function(clockObject) {
       var date = clockObject.timer.timeRemaining()
